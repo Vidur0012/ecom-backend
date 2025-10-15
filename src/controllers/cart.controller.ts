@@ -4,13 +4,17 @@ import { ProductModel } from '../models/product.model';
 import mongoose from 'mongoose';
 
 export const getAllItems = async (req: Request, res: Response, next: NextFunction) => {
-    const { userId } = req.body;
+    // in real scenario it will be extracted from signed token
+    const  userId  = req.headers["user-id"];
     const cart = await CartModel.findOne({ user: userId }).populate('items.product');
     res.json(cart || { items: [] });
 };
 
 export const addToCart = async (req: Request, res: Response, next: NextFunction) => {
-    const { productId,userId, quantity = 1 } = req.body;
+    // in real scenario it will be extracted from signed token
+    const  userId  = req.headers["user-id"];
+    
+    const { productId, quantity = 1 } = req.body;
     if (!mongoose.isValidObjectId(productId)) 
         return res.status(400).json({ message: 'Invalid product' });
 
@@ -35,7 +39,11 @@ export const addToCart = async (req: Request, res: Response, next: NextFunction)
 
 export const updateQuantity = async (req: Request, res: Response, next: NextFunction) => {
     const { productId } = req.params;
-    const { qty, userId } = req.body;
+    const { qty } = req.body;
+
+    // in real scenario it will be extracted from signed token
+    const  userId  = req.headers["user-id"];
+
     const cart = await CartModel.findOne({ user: userId });
     if (!cart) return res.status(404).json({ message: 'Cart data not found' });
     const item = cart.items.find(i => i.product.toString() === productId);
@@ -47,7 +55,9 @@ export const updateQuantity = async (req: Request, res: Response, next: NextFunc
 };
 
 export const removeProduct = async (req: Request, res: Response, next: NextFunction) => {
-    const { userId } = req.body;
+    // in real scenario it will be extracted from signed token
+    const  userId  = req.headers["user-id"];
+
     const { productId } = req.params;
     const cart = await CartModel.findOne({ user: userId });
     if (!cart)
