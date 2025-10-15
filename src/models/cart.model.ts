@@ -11,7 +11,6 @@ export interface ICart extends Document {
 }
 
 const CartSchema = new Schema<ICart>({
-//   user: { type: Schema.Types.ObjectId, ref: 'User', unique: true, required: true },
   user: { type: Number, unique: true, required: true },
   items: [{
     product: { type: Schema.Types.ObjectId, ref: 'Product', required: true },
